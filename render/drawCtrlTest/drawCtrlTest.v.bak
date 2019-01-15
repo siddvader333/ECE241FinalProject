@@ -1,0 +1,417 @@
+/*module drawCtrlTest(SW,KEY, CLOCK_50, LEDR);
+input CLOCK_50;
+input [9:0]SW;
+output [3:0] KEY;
+output [9:0]LEDR;
+
+wire black_en, red_en, green_en;
+wire [2:0]RGB;
+wire [9:0]x0;
+wire [9:0]w;
+wire [8:0]y0;
+wire [8:0]h;
+
+wire [3:0] state;
+
+								 
+assign LEDR[0] = black_en;
+assign LEDR[1] = red_en;
+assign LEDR[2] = green_en;
+
+assign LEDR[8:5] = state;
+
+endmodule */
+
+module drawCtrlTest
+(
+	input [6:0]y_g,
+	input [6:0]y_r,
+	input [7:0]x_ball,
+	input [6:0]y_ball,
+
+	input valid, done, startGame,
+
+	input clock,
+
+	input reset,
+	output [5:0]state,
+	output go,
+	output [2:0]RGB,
+	output [7:0]x0Out,
+	output [6:0]y0Out,
+	output [7:0]width,
+	output [6:0]height
+	
+);
+
+//wire [8:0] x0, w;
+//wire [7:0] y0 , h;
+//wire [2:0]color;
+wire goWire;
+wire black_en, red_en, green_en, ball_en,init_en;
+
+drawCtrl_Ctrl cp(		.reset(reset), 
+							.clock(clock), 
+							.valid(valid),
+							.startGame(startGame),	
+							.done(done), 
+							
+							.init_en(init_en),
+							.black_en(black_en), 
+							.red_en(red_en), 
+							.green_en(green_en),
+							.ball_en(ball_en),
+							.currentState(state),
+							.go(goWire)
+							);//control path 
+
+
+
+drawCtrl_dataPath dp( 	 					 .y_g(y_g),
+								 .y_r(y_r), 
+								 .x_ball(x_ball),
+								 .y_ball(y_ball),
+								 .valid(valid),
+								 .init(init_en),
+								 .black(black_en),
+								 .red(red_en), 
+								 .green(green_en),
+								 .ball(ball_en), 
+								 .reset(reset), 
+								 .clock(clock),
+								 .goIn(goWire), 
+								 
+								  .RGB(RGB), 
+								 .x0Out(x0Out), 
+								 .y0Out(y0Out), 
+								 .width(width),
+								 .height(height),
+								 .goOut(go)
+								 );//datapath*/
+
+
+
+
+endmodule
+
+module drawCtrl_Ctrl(
+							input reset, 
+							input clock, 
+							input valid, 
+							input startGame,
+							input done, 
+							
+							output reg init_en,
+							output reg black_en, 
+							output reg red_en, 
+							output reg green_en,
+							output reg ball_en,
+							output  reg [5:0]currentState,
+
+							output reg go
+
+							);//control path 
+
+							
+							
+
+reg [5:0] nextState;	
+				
+							
+//defining states 
+localparam	
+			  S_INIT_BLACK = 5'd0,
+			  S_INIT_BLACK_WAIT = 5'd1,
+			  S_INIT_R = 5'd2,
+			  S_INIT_R_WAIT = 5'd3,
+			  S_INIT_G = 5'd4,
+			  S_INIT_G_WAIT = 5'd5,
+			  S_INIT_BALL =5'd6,
+			  S_INIT_BALL_WAIT = 5'd7,
+			  S_SCAN = 5'd8,
+			  S_WAIT = 5'd9,
+			  S_BLACK = 5'd10,
+			  S_WAIT_1 = 5'd11,
+			  S_GREEN = 5'd12,
+			  S_WAIT_2 = 5'd13,
+			  S_RED = 5'd14,
+			  S_WAIT_3 = 5'd15,
+			  S_BALL = 5'd16,
+			  S_WAIT_4 = 5'd17;
+		
+//state table definition
+
+always@(*)
+	begin: state_table
+		
+		case(currentState)
+		
+			S_INIT_BLACK: nextState = done ? S_INIT_BLACK_WAIT : S_INIT_BLACK;
+			
+			S_INIT_BLACK_WAIT: nextState = done ? S_INIT_BLACK_WAIT : S_INIT_R;
+		
+			S_INIT_R: nextState = done ? S_INIT_R_WAIT : S_INIT_R;
+			
+			S_INIT_R_WAIT: nextState = done ? S_INIT_R_WAIT : S_INIT_G;
+			
+			S_INIT_G: nextState = done ? S_INIT_G_WAIT : S_INIT_G;
+			
+			S_INIT_G_WAIT: nextState = done ? S_INIT_G_WAIT : S_INIT_BALL;
+			
+			S_INIT_BALL: nextState = done ? S_INIT_BALL_WAIT : S_INIT_BALL;
+			
+			S_INIT_BALL_WAIT: nextState = startGame ? S_INIT_BALL_WAIT : S_SCAN;
+			
+			S_SCAN: nextState = valid ? S_WAIT : S_SCAN;
+			
+			S_WAIT: nextState = valid ? S_WAIT : S_BLACK;
+			
+			S_BLACK: nextState = done ? S_WAIT_1 : S_BLACK;
+			
+			S_WAIT_1: nextState = done ? S_WAIT_1 : S_GREEN;
+			
+			S_GREEN: nextState = done ? S_WAIT_2 : S_GREEN;
+			
+			S_WAIT_2: nextState = done ? S_WAIT_2 : S_RED;
+			
+			S_RED: nextState = done ? S_WAIT_3 : S_RED;
+
+			S_WAIT_3: nextState = done ? S_WAIT_3 : S_BALL;
+
+			S_BALL: nextState = done ? S_WAIT_4 : S_BALL;
+
+			S_WAIT_4: nextState = done ? S_WAIT_4 : S_SCAN; 
+			
+			default: nextState = S_INIT_BLACK;
+		endcase
+	end//always
+			
+			
+			
+			
+//state registers 
+
+always@(posedge clock)
+begin: state_FFs
+	
+	if(reset)begin
+		currentState <= S_INIT_BLACK;
+	end
+	
+	else begin
+	currentState <= nextState;
+	end
+
+end//always
+
+
+
+
+
+//output logic 
+
+always@(posedge clock)
+begin: enables
+
+	//default enables
+	init_en = 1'b0;
+	black_en = 1'b0;
+	green_en = 1'b0;
+	red_en = 1'b0;
+	ball_en = 1'b0;
+	go = 1'b0;
+	//nextState = currentState;
+
+	case(currentState)
+	
+	S_INIT_BLACK:
+	begin
+		init_en =1'b1;
+		black_en = 1'b1;
+		go =1'b1;
+	end
+	S_INIT_R:
+	begin
+		init_en = 1'b1;
+		red_en = 1'b1;
+		go = 1'b1;
+	end
+	
+	S_INIT_G:
+	begin
+		init_en = 1'b1;
+		green_en = 1'b1;
+		go = 1'b1;
+	end
+	
+	S_INIT_BALL:
+	begin
+		init_en = 1'b1;
+		ball_en = 1'b1;
+		go = 1'b1;
+	end
+	
+	S_BLACK: 
+	begin
+			init_en = 1'b0;
+			black_en = 1'b1;
+			go = 1'b1;
+	end
+	
+	S_GREEN: 
+	begin
+			init_en = 1'b0;
+			green_en = 1'b1;
+			go = 1'b1;
+	end
+	
+	S_RED: 
+	begin
+			init_en = 1'b0;
+			red_en = 1'b1;
+			go = 1'b1;
+	end
+
+	S_BALL:
+	begin
+			init_en = 1'b0;
+			ball_en = 1'b1;
+			go = 1'b1;
+	end
+	
+ endcase		
+
+end//always output logic
+
+
+
+endmodule
+
+
+module drawCtrl_dataPath(					 input [6:0] y_g,
+								 input [6:0] y_r,
+								 input [7:0] x_ball,
+								 input [6:0] y_ball, 
+								 input valid,
+								 input init,
+								 input black,
+								 input red, 
+								 input green, 
+								 input ball,
+								 input reset, 
+								 input clock, 
+								 input goIn,
+								 
+								 output reg [2:0] RGB, 
+								 output reg [7:0] x0Out, 
+								 output reg [6:0] y0Out, 
+								 output reg [7:0] width,
+								 output reg [6:0] height,
+								 output reg goOut
+								 );//datapath
+								 
+								 
+always@(posedge clock)begin
+		goOut <= goIn;
+	
+	if(reset)begin
+			RGB = 3'b000;
+			x0Out = 8'b0;
+			y0Out = 7'b0;
+			width = 8'd0;
+			height = 7'd0;
+			
+	end
+else begin
+
+		//initial drawing 
+		if(init)begin
+				if(black)
+				begin
+					RGB = 3'b000;
+					x0Out = 8'b0;
+					y0Out = 7'b0;
+					width = 8'd160;
+					height = 7'd120; 	
+				end
+				
+				
+			if(red)
+			begin
+				RGB = 3'b111;
+				x0Out = 8'd100;
+				y0Out = 7'd60;
+				width = 8'd10;
+				height = 7'd30;
+			
+			end
+		
+			if(green)
+			begin
+				RGB = 3'b111;
+				x0Out = 8'd20;
+				y0Out = 7'd60;
+				width = 8'd10;
+				height = 7'd30; 
+			
+			end
+
+			if(ball)
+			begin
+				RGB = 3'b111;
+				x0Out = 8'd80;
+				y0Out = 7'd60;
+				width = 8'd1;
+				height = 7'd1;
+
+			end		
+				
+		end //end init	
+	
+if(!init)begin	
+		if(black)
+		begin
+			RGB = 3'b000;
+			x0Out = 8'b0;
+			y0Out = 7'b0;
+			width = 8'd160;
+			height = 7'd120; 
+			
+		end
+		
+		if(red)
+		begin
+			RGB = 3'b111;
+			x0Out = 8'd100;
+			y0Out = y_r;
+			width = 8'd10;
+			height = 7'd30;
+			
+		end
+		
+		if(green)
+		begin
+			RGB = 3'b111;
+			x0Out = 8'd20;
+			y0Out = y_g;
+			width = 8'd10;
+			height = 7'd30; 
+			
+		end
+
+		if(ball)
+		begin
+			RGB = 3'b111;
+			x0Out = x_ball;
+			y0Out = y_ball;
+			width = 8'd1;
+			height = 7'd1;
+
+		end
+
+	 end//end !init
+		
+	end // else
+end//always								 							 							 
+
+endmodule 

@@ -1,0 +1,289 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "state[0]",
+					"strict" : false
+				},
+				{
+					"name" : "state[1]",
+					"strict" : false
+				},
+				{
+					"name" : "state[2]",
+					"strict" : false
+				},
+				{
+					"name" : "state[3]",
+					"strict" : false
+				},
+				{
+					"name" : "state[4]",
+					"strict" : false
+				},
+				{
+					"name" : "go",
+					"strict" : false
+				},
+				{
+					"name" : "RGB[0]",
+					"strict" : false
+				},
+				{
+					"name" : "RGB[1]",
+					"strict" : false
+				},
+				{
+					"name" : "RGB[2]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[0]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[1]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[2]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[3]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[4]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[5]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[6]",
+					"strict" : false
+				},
+				{
+					"name" : "x0Out[7]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[0]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[1]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[2]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[3]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[4]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[5]",
+					"strict" : false
+				},
+				{
+					"name" : "y0Out[6]",
+					"strict" : false
+				},
+				{
+					"name" : "width[0]",
+					"strict" : false
+				},
+				{
+					"name" : "width[1]",
+					"strict" : false
+				},
+				{
+					"name" : "width[3]",
+					"strict" : false
+				},
+				{
+					"name" : "width[5]",
+					"strict" : false
+				},
+				{
+					"name" : "width[7]",
+					"strict" : false
+				},
+				{
+					"name" : "height[0]",
+					"strict" : false
+				},
+				{
+					"name" : "height[1]",
+					"strict" : false
+				},
+				{
+					"name" : "height[2]",
+					"strict" : false
+				},
+				{
+					"name" : "height[3]",
+					"strict" : false
+				},
+				{
+					"name" : "height[4]",
+					"strict" : false
+				},
+				{
+					"name" : "height[5]",
+					"strict" : false
+				},
+				{
+					"name" : "height[6]",
+					"strict" : false
+				},
+				{
+					"name" : "clock",
+					"strict" : false
+				},
+				{
+					"name" : "startGame",
+					"strict" : false
+				},
+				{
+					"name" : "done",
+					"strict" : false
+				},
+				{
+					"name" : "valid",
+					"strict" : false
+				},
+				{
+					"name" : "reset",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[0]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[1]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[2]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[3]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[4]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[5]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[6]",
+					"strict" : false
+				},
+				{
+					"name" : "x_ball[7]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[0]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[0]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[0]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[1]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[1]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[1]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[2]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[2]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[2]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[3]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[3]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[3]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[4]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[4]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[4]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[5]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[5]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[5]",
+					"strict" : false
+				},
+				{
+					"name" : "y_g[6]",
+					"strict" : false
+				},
+				{
+					"name" : "y_r[6]",
+					"strict" : false
+				},
+				{
+					"name" : "y_ball[6]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

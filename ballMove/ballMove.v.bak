@@ -1,0 +1,280 @@
+module ballMoveDataPath(input [6:0]y_g,
+								input [6:0]y_r,
+								input ld_en, 
+								input [2:0] x_sel,
+								input [2:0] y_sel,
+								input valid, //figure out exactly why you need this
+								
+								input reset, 
+								input clock,
+								
+								output reg [7:0] x_ball,
+								output reg [6:0] y_ball,
+								output reg hitPaddle, 
+								output  reg hitWall,
+								output  reg winPoint,
+								output reg verticalMove, // 1 is up 0 is down
+								output reg horizontalMove // 1 is right 0 is left				
+);
+
+		//verticalMove <= 1'd0;
+		//horizontalMove <= 1'd1;
+
+	always @ (posedge clock)begin
+		
+		//defaults 
+		hitWall <= 1'd0;
+		hitPaddle <= 1'd0;
+		winPoint <= 1'd0;
+		if(x_sel == 2'd0) x_ball = 8'd90;
+		if(y_sel == 2'd0) y_ball == 7'd60;
+	
+		if(valid)begin
+			if(ld_en)begin
+	
+			//x selector
+			case(x_sel)
+				2'd0: x_ball = 8'd90; 
+				2'd1: begin 
+					x_ball = x_ball + 1'd1;
+					horizontalMove <= 1'd1;
+				      end
+				2'd2: begin
+					x_ball = x_ball - 1'd1;
+					horizontalMove <= 1'd0;
+				      end
+			
+			endcase
+			
+			//y selector
+			case(y_sel)
+				2'd0: y_ball = 7'd60; 
+				2'd1: begin
+					y_ball = y_ball + 1'd1;
+					verticalMove <= 1'd0;
+				      end
+				2'd2: begin
+					y_ball = y_ball - 1'd1;
+					verticalMove <= 1'd1;
+				     end
+			
+			endcase
+	
+		end//end enable if
+	end //valid if 
+		
+		//check collisions 
+		
+		//wall collision (top or bottom)
+		
+		if(y_ball == 7'd2 || y_ball == 7'd118/* make sure this is the right value*/)
+			begin
+				hitWall <= 1;
+			end
+		
+		//wall collisions --> left or right (winpoint)
+		if(x_ball == 8'd2 || x_ball == 8'd158)
+			begin
+				winPoint <= 1;
+			end
+		
+		//paddle collision 
+		
+		//greenPaddle
+		if(x_ball == 8'd30/*replace this with actual value*/ && ( (y_ball>(y_g)) && (y_ball < (y_g +7'd30/*height*/)) ))
+			begin
+				hitPaddle <= 1;
+			end
+		
+		//redPaddle
+				//greenPaddle
+		if(x_ball == 8'd130/*replace this with actual value*/ && ( (y_ball>(y_r)) && (y_ball < (y_r +7'd30 /*height*/)) ))
+			begin
+				hitPaddle <= 1;
+			end
+	
+	end//always 
+
+
+endmodule //end dataPath
+
+
+module ballMoveControlPath(input clock,
+									input reset, 
+									input startGame, 
+									input hitPaddle, 
+									input hitWall,
+									input winPoint,
+									input verticalMove,
+									input horizontalMove, 
+									input valid,
+									
+									output reg ld_en, 
+									output reg [2:0]x_sel, 
+									output reg [2:0]y_sel
+);
+
+
+//state registers 
+reg[3:0] currentState, nextState;
+
+reg vertMove;
+reg horMove;
+localparam 		  S_INIT 	= 4'd0,
+			  S_INIT_LOAD = 4'd1,
+			  S_START_MOVE 	= 4'd2,
+			  S_START_MOVE_WAIT = 4'd3,
+			  S_IDLE 	= 4'd4,
+			  S_MOVE    = 4'd5,
+			  S_MOVE_WAIT = 4'd6,
+			  S_HIT_PADDLE 	= 4'd7,
+			  S_HIT_WALL	= 4'd8;
+
+			  
+			  
+	always @ (posedge clock or posedge reset) begin
+
+		vertMove <= verticalMove;
+		horMove <= horizontalMove;
+		
+		if (reset) currentState <= S_INIT;
+		else currentState <= nextState;
+	end
+
+	
+	always @(*) begin
+	
+		//default enables 
+		//ld_en = 1'd0;
+		//x_sel = 2'd0;
+		//y_sel = 2'd0;
+		nextState = currentState;
+		case(currentState)
+		
+				S_INIT: 
+				begin
+					ld_en = 1'd1;
+					x_sel = 2'd0;
+					y_sel = 2'd0;
+				
+					if(startGame)
+						begin
+							nextState = S_INIT_LOAD;
+						end
+	  		   	end 
+			
+			
+			S_INIT_LOAD:
+			begin
+				
+					ld_en =1'd1;
+					x_sel = 2'd0;
+					y_sel = 2'd0;
+				if(!startGame)begin
+					nextState = S_START_MOVE;
+				end
+				
+			end
+			
+			S_START_MOVE: 
+			begin
+				//begin game -> ball moves with slope 1/-1 (positive in y and x)
+				ld_en = 1'd1;
+				x_sel = 2'd1;
+				y_sel = 2'd2;
+				
+				if(valid)begin
+				nextState = S_START_MOVE_WAIT;
+				end
+				
+			end
+
+			S_START_MOVE_WAIT:
+			begin
+				ld_en = 1'd0;
+				if(!valid)begin
+					nextState = S_IDLE;	
+					end
+			end
+			
+			S_IDLE:
+			begin
+				ld_en = 1'd0;
+				//do nothing and wait for next interaction 
+				if(hitPaddle) nextState = S_HIT_PADDLE;
+			
+				if(hitWall) nextState = S_HIT_WALL;
+			
+				if(winPoint) nextState = S_INIT;
+
+				if(valid) begin 
+				nextState = S_MOVE;
+				end
+			
+			end
+
+			
+			S_MOVE:
+			begin
+				ld_en = 1'd1;
+				//should stay in this state for one clock cylce (to increment ball position, then move to wait)
+			
+				nextState = S_MOVE_WAIT;			
+			end
+			
+			S_MOVE_WAIT:
+			begin
+				//stay here while valid is high--> therfore, if using key, 1 valid signal per press
+				ld_en = 1'd0;
+			
+				if(!valid)begin
+					nextState = S_IDLE;
+				end
+			
+			
+			end
+			
+		  
+		  	S_HIT_PADDLE:
+			begin
+				ld_en = 1'd1;
+	
+				//only change y
+				
+				if(horMove) //moving right
+				begin
+					x_sel = 2'd2; //if coming from right go to left
+				end
+
+				else x_sel = 2'd1; //left to right
+			
+				nextState = S_IDLE; 
+				
+			end
+		
+		
+			S_HIT_WALL:
+			begin	
+				ld_en = 1'd1;
+				//don't change x it stays the same
+				if(vertMove)//moving up
+				begin	
+					y_sel = 2'd1; //moving down
+				end
+			
+				else y_sel = 2'd2; //if coming from bottom, go to top
+				
+				
+				nextState = S_IDLE;
+				
+			end
+		
+			//default: currentState = S_INIT;
+		endcase
+	
+	
+	end//main always 
+
+
+
+endmodule //end controlPath

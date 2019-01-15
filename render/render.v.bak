@@ -1,0 +1,65 @@
+module render(
+				  input [6:0] y_g,
+				  input [6:0] y_r,
+				  input valid, 
+				  input clock,
+				  input reset,
+				  
+				  output [7:0]xOut,
+				  output [6:0]yOut,
+				  output plotEnable, 
+				  output [2:0] colorOut
+				  
+				  );
+				  
+
+wire state;		
+wire [7:0]x0;
+wire [7:0]w;
+wire [6:0]y0;
+wire [6:0]h;
+wire [2:0]RGB;	
+wire go;  
+				  
+//drawCtrTlTop
+drawCtrlTop dctrlTop
+(
+	.y_g(y_g),
+	.y_r(y_r),
+
+	.valid(valid), 
+	.done(),
+
+	.clock(clock),
+
+	.reset(reset),
+	.state(state),
+	.go(go),
+	.x0Out(x0),
+	.y0Out(y0),
+	.width(w),
+	.height(h)
+);
+
+//rectangleTop
+ rectangleTop rctTop(		
+							.x0(x0), 
+							.y0(y0),
+							.width(w), 
+							.height(h), 
+						   .RGB(RGB),
+							.clck(clock), 
+						   .reset(reset),
+							
+							.go(go),
+							
+							.xOut(xOut), 
+							.yOut(yOut), 
+							.plotEnable(plotEnable),
+						   .colorOut(colorOut)
+							);
+
+
+
+
+endmodule

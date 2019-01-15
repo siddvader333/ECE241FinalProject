@@ -1,0 +1,106 @@
+module rectangle_Ctrl (go, done, reset, clock, plotEnable);
+input go, done, reset;
+input clock
+output plotEnable;
+
+
+reg [2:0] nextState, currentState; 
+
+localparam 
+				S_WAIT = 2'b00;
+				S_DRAW = 2'b01;
+	
+	
+//state table 
+always@(*)
+begin: state_table
+	case(currentState)
+		
+		S_WAIT: nextState = go ? S_DRAW : S_WAIT;
+		
+		S_DRAW: nextState = done ? S_WAIT : S_DRAW;
+		
+		default: nextState = S_WAIT;
+		
+	endcase
+
+end //state table 
+
+
+//State registers 
+always@(posedge clock)
+begin: state_FFs
+	if(!reset)
+		currentState <= S_WAIT;
+		
+	else 
+		currentState <= nextState;
+end
+
+//output logic
+assign plotEnable = currentState == S_DRAW; //allow plotting when in draw mode	
+	
+endmodule //rectangle control path 
+
+module rectangle_DataPath(input [8:0]x0,
+								  input [7:0]y0,
+								  input [8:0]w,
+								  input [7:0]h,
+								  input [2:0]colorIn
+								  input goIn,
+								  input plotEnable,
+								  input reset,
+								  input clock,
+								  
+								 
+								  output reg [8:0]xOut,
+								  output reg [7:0]yOut,
+								  output reg [2:0]RGB, 
+								  output reg plotEn,
+								  output reg goOut,
+								  output reg done);
+								  
+	
+reg[8:0] countX, countY;
+assign goOut = goIn;
+assign plotEn = plotEnable;
+assign xOut = countX;
+assign yOut = countY;
+assign RGB = colorIn;
+	
+always@(posedge clock)begin
+
+	if(!reset)
+		begin
+			xOut = 9'b0;
+			yOut = 8'b0;
+			plotEn = 1'b0;
+			done = 1'b0;
+		end			
+		
+	if(plotEnable)	//if in draw mode
+		begin 
+		countY <= y0;
+		// y loop
+			if(countY < y0+h)
+				begin
+					//x loop
+					countX <= x0;
+					if(countX < x0 +w)
+						begin
+							countX = countX +1;
+						end// end x loop
+						
+					countY = countY +1;
+				end	//end y loop
+				
+			//reach here when it has iterated through all necessary pixels
+			done <= 1'b1;	
+		
+		end
+
+		
+end								  
+								  
+
+endmodule

@@ -1,0 +1,2 @@
+Warning (10268): Verilog HDL information at ballMove.v(23): always construct contains both blocking and non-blocking assignments File: C:/Users/adeeb/Desktop/ballMove/ballMove.v Line: 23
+Warning (10268): Verilog HDL information at drawCtrlTest.v(314): always construct contains both blocking and non-blocking assignments File: C:/Users/adeeb/Desktop/render/drawCtrlTest/drawCtrlTest.v Line: 314

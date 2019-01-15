@@ -1,0 +1,217 @@
+
+module controlPath(resetN, clock, go, newFrame, outEnable, ld_x, ld_y, ld_c);
+
+input resetN, clock, go, newFrame;
+output reg ld_x; 
+output reg ld_y; 
+output reg ld_c;
+output reg outEnable;
+
+
+//FSM data structure
+ reg[2:0] current_state, next_state; //number of states = 3--> 2 bits 
+
+ //defining states
+ 
+ localparam
+ 
+		S_NOT_FOUND = 3'd0,
+		S_FOUND = 3'd1,
+		S_CYCLE = 3'd2;
+			
+
+
+	//next state logic 
+	
+	always@(*) 
+	begin: state_table
+			
+			case(current_state)
+				S_NOT_FOUND: next_state = go ? S_FOUND : S_NOT_FOUND;
+				
+				S_FOUND: next_state = S_CYCLE;
+				
+				S_CYCLE: next_state = newFrame ? S_NOT_FOUND : S_CYCLE;
+		
+				default: next_state = S_NOT_FOUND;
+			endcase
+			
+	end 
+
+
+	//output logic
+	
+	always@(*)
+	begin: enable_signals
+	//default enable signals
+	ld_x = 1'b0;
+	ld_y = 1'b0;
+	ld_c = 1'b0;
+	outEnable = 1'b0;
+	
+		case(current_state)
+			S_NOT_FOUND: 
+					begin
+					//do nothing
+					end
+					
+			S_FOUND:
+					begin
+					ld_x = 1'b1;
+					ld_y = 1'b1;
+					ld_c = 1'b1;
+					outEnable = 1'b1;
+					end
+					
+			S_CYCLE: 
+					begin
+					ld_x = 1'b0;
+					ld_y = 1'b0;
+					ld_c = 1'b0;
+					outEnable = 1;
+					end
+		
+		endcase
+		
+	end	
+		
+
+		//current state registers
+		always@(posedge clock)
+			begin: state_FFs
+					if(!resetN)
+						begin
+						current_state <= S_NOT_FOUND;
+						end//end if
+					
+					else begin
+						current_state <= next_state;
+						end
+			
+			end
+		
+		
+
+endmodule //controlPath
+
+
+module dataPath(resetN, clock, outEnable, ld_x, ld_y, ld_c, data_x, data_y, data_R, data_G, data_B, x_out, y_out, R_out, G_out, B_out, go, newFrame);
+input resetN, clock, ld_x, ld_y, ld_c, outEnable;
+input [8:0] data_x;
+input [7:0] data_y;
+input [4:0] data_R;
+input [5:0] data_G;
+input [4:0] data_B;
+
+output reg [8:0] x_out;
+output reg [7:0] y_out;
+output reg [4:0] R_out;
+output reg [5:0] G_out;
+output reg [4:0] B_out;
+
+output reg go;
+output reg newFrame;
+
+
+//input registers
+
+reg [8:0] x;
+reg [7:0] y;
+reg [4:0] R, B;
+reg [5:0] G;
+
+//registers with respective input logic
+always@(posedge clock) begin
+	if(!resetN) //reset all registers
+		begin
+			x <= 8'b0;
+			y <= 7'b0;
+			R <= 4'b0;
+			G <= 5'b0;
+			B <= 4'b0;
+		end// end if 
+		
+	else
+		begin
+		//pixel found -> write to registers
+		if(ld_x)
+			x <= {1'b0, data_x};
+		
+		if(ld_y)
+			y <= data_y;
+			
+		if(ld_c)
+				begin
+				 R <= data_R;
+				 G <= data_G;
+				 B <= data_B;
+				end
+		//output
+		if(outEnable)
+			begin
+			x_out <= x;
+			y_out <= y;
+			R_out <= R;
+			G_out <= G;
+			B_out <= B;
+			end
+			
+		//check pixel colour and output go		
+		if(data_R >3'd200 && data_G < 3'd100 && data_B == 3'd100)		
+				go <= 1'b1;
+				
+		
+		//newFrame reached --> if x and y are 0
+		if(data_x ==1'b0 && data_y == 1'b0)
+			newFrame <= 1'b1;
+			
+		end//end else
+		
+end// always		
+		
+
+
+endmodule//dataPath
+
+
+module hex_decoder(hex_digit, segments);
+    input [3:0] hex_digit;
+    output reg [6:0] segments;
+   
+    always @(*)
+        case (hex_digit)
+            4'h0: segments = 7'b100_0000;
+            4'h1: segments = 7'b111_1001;
+            4'h2: segments = 7'b010_0100;
+            4'h3: segments = 7'b011_0000;
+            4'h4: segments = 7'b001_1001;
+            4'h5: segments = 7'b001_0010;
+            4'h6: segments = 7'b000_0010;
+            4'h7: segments = 7'b111_1000;
+            4'h8: segments = 7'b000_0000;
+            4'h9: segments = 7'b001_1000;
+            4'hA: segments = 7'b000_1000;
+            4'hB: segments = 7'b000_0011;
+            4'hC: segments = 7'b100_0110;
+            4'hD: segments = 7'b010_0001;
+            4'hE: segments = 7'b000_0110;
+            4'hF: segments = 7'b000_1110;   
+            default: segments = 7'h7f;
+        endcase
+		
+endmodule			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

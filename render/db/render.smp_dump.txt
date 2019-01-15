@@ -1,0 +1,18 @@
+
+State Machine - |render|renderTest:r1|ballMoveTest:ball|ballMoveControlPath:ballCp|currentState
+Name currentState.S_HIT_PADDLE currentState.S_MOVE_WAIT currentState.S_MOVE currentState.S_IDLE currentState.S_START_MOVE_WAIT currentState.S_START_MOVE currentState.S_INIT_LOAD currentState.S_INIT currentState.S_HIT_WALL 
+currentState.S_INIT 0 0 0 0 0 0 0 0 0 
+currentState.S_INIT_LOAD 0 0 0 0 0 0 1 1 0 
+currentState.S_START_MOVE 0 0 0 0 0 1 0 1 0 
+currentState.S_START_MOVE_WAIT 0 0 0 0 1 0 0 1 0 
+currentState.S_IDLE 0 0 0 1 0 0 0 1 0 
+currentState.S_MOVE 0 0 1 0 0 0 0 1 0 
+currentState.S_MOVE_WAIT 0 1 0 0 0 0 0 1 0 
+currentState.S_HIT_PADDLE 1 0 0 0 0 0 0 1 0 
+currentState.S_HIT_WALL 0 0 0 0 0 0 0 1 1 
+
+State Machine - |render|renderTest:r1|rectangleTop:rctTop|rectangleCtrl:cp|state
+Name state.S_IDLE state.S_INC_Y state.S_DRAW 
+state.S_IDLE 0 0 0 
+state.S_DRAW 1 0 1 
+state.S_INC_Y 1 1 0 

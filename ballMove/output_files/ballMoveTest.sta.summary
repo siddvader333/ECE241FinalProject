@@ -1,0 +1,213 @@
+------------------------------------------------------------
+Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1100mV 85C Model Setup 'CLOCK_50'
+Slack : -5.399
+TNS   : -85.444
+
+Type  : Slow 1100mV 85C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : -4.944
+TNS   : -16.975
+
+Type  : Slow 1100mV 85C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : -4.313
+TNS   : -8.334
+
+Type  : Slow 1100mV 85C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 35.228
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'CLOCK_50'
+Slack : -0.946
+TNS   : -1.197
+
+Type  : Slow 1100mV 85C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.429
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.857
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 2.797
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.193
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 0.439
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.874
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.780
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Setup 'CLOCK_50'
+Slack : -5.310
+TNS   : -80.625
+
+Type  : Slow 1100mV 0C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : -4.949
+TNS   : -17.119
+
+Type  : Slow 1100mV 0C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : -4.305
+TNS   : -8.411
+
+Type  : Slow 1100mV 0C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 35.305
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'CLOCK_50'
+Slack : -1.099
+TNS   : -1.509
+
+Type  : Slow 1100mV 0C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.407
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.827
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 2.847
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.201
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 0.400
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.823
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.754
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Setup 'CLOCK_50'
+Slack : -3.434
+TNS   : -57.388
+
+Type  : Fast 1100mV 85C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : -2.256
+TNS   : -7.490
+
+Type  : Fast 1100mV 85C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : -1.950
+TNS   : -3.685
+
+Type  : Fast 1100mV 85C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 37.065
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'CLOCK_50'
+Slack : -0.447
+TNS   : -0.501
+
+Type  : Fast 1100mV 85C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.243
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.459
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 1.535
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.196
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 0.434
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.815
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.891
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Setup 'CLOCK_50'
+Slack : -2.775
+TNS   : -44.216
+
+Type  : Fast 1100mV 0C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : -2.110
+TNS   : -7.097
+
+Type  : Fast 1100mV 0C Model Setup 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : -1.836
+TNS   : -3.511
+
+Type  : Fast 1100mV 0C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 37.333
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'CLOCK_50'
+Slack : -0.582
+TNS   : -0.818
+
+Type  : Fast 1100mV 0C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.219
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.417
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 1.513
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_IDLE'
+Slack : 0.259
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'ballMoveTop:ball|ballMoveControlPath:ballCp|currentState.S_HIT_WALL'
+Slack : 0.442
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.805
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.889
+TNS   : 0.000
+
+------------------------------------------------------------

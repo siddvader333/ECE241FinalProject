@@ -1,0 +1,57 @@
+# set the working dir, where all compiled verilog goes
+vlib work
+
+# compile all verilog modules in mux.v to working dir
+# could also have multiple verilog files
+vlog rectangletTest.v rectangle.v
+
+#load simulation using mux as the top level simulation module
+vsim rectangletTest
+
+#log all signals and add some signals to waveform window
+log {/*}
+# add wave {/*} would add all items in top level simulation module
+add wave {/*}
+
+
+force CLOCK_50 0 0ns, 1 {1ns} -r 2ns
+
+#2x2 white square
+#rgb
+force {SW[9]} 1
+force {SW[8]} 1
+force {SW[7]} 1
+#width/ height
+force {SW[6]} 1
+force {SW[5]} 1
+force {SW[4]} 1
+force {SW[3]} 1
+
+#x0,y0
+force {SW[2]} 0
+force {SW[1]} 0
+force {SW[0]} 0
+
+#go 
+force{KEY[2]} 1
+
+run 10ns
+
+#rgb
+force {SW[9]} 1
+force {SW[8]} 1
+force {SW[7]} 1
+#width/ height
+force {SW[6]} 1
+force {SW[5]} 1
+force {SW[4]} 1
+force {SW[3]} 1
+
+#x0,y0
+force {SW[2]} 0
+force {SW[1]} 0
+force {SW[0]} 0
+
+#go 
+force{KEY[2]} 0
+run 10ns

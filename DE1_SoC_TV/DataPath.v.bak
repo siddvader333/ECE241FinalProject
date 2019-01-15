@@ -1,0 +1,78 @@
+
+module dataPath(resetN, clock, outEnable, ld_x, ld_y, ld_c, data_x, data_y, data_R, data_G, data_B, x_out, y_out, R_out, G_out, B_out, go, newFrame);
+input resetN, clock, ld_x, ld_y, ld_c, outEnable;
+input [8:0] data_x;
+input [7:0] data_y;
+input [4:0] data_R;
+input [5:0] data_G;
+input [4:0] data_B;
+
+output reg [8:0] x_out;
+output reg [7:0] y_out;
+output reg [4:0] R_out;
+output reg [5:0] G_out;
+output reg [4:0] B_out;
+
+output reg go;
+output reg newFrame;
+
+
+//input registers
+
+reg [8:0] x;
+reg [7:0] y;
+reg [4:0] R, B;
+reg [5:0] G;
+
+//registers with respective input logic
+always@(posedge clock) begin
+	if(!resetN) //reset all registers
+		begin
+			x <= 8'b0;
+			y <= 7'b0;
+			R <= 4'b0;
+			G <= 5'b0;
+			B <= 4'b0;
+		end// end if 
+		
+	else
+		begin
+		//pixel found -> write to registers
+		if(ld_x)
+			x <= {1'b0, data_x};
+		
+		if(ld_y)
+			y <= data_y;
+			
+		if(ld_c)
+				begin
+				 R <= data_R;
+				 G <= data_G;
+				 B <= data_B;
+				end
+		//output
+		if(outEnable)
+			begin
+			x_out <= x;
+			y_out <= y;
+			R_out <= R;
+			G_out <= G;
+			B_out <= B;
+			end
+			
+		//check pixel colour and output go		
+		if(data_R >3'd200 && data_G < 3'd100 && data_B == 3'd100)		
+				go <= 1'b1;
+				
+		
+		//newFrame reached --> if x and y are 0
+		if(data_x ==1'b0 && data_y == 1'b0)
+			newFrame <= 1'b1;
+			
+		end//end else
+		
+end// always		
+		
+
+
+endmodule//dataPath

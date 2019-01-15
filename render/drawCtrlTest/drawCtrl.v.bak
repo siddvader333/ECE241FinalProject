@@ -1,0 +1,182 @@
+module drawCtrl_Ctrl(					input reset, 
+							input clock, 
+							input valid, 
+							input done, 
+							
+							output reg black_en, 
+							output reg red_en, 
+							output reg green_en,
+							output  reg [3:0]currentState,
+							output reg go
+							);//control path 
+
+							
+							
+
+reg [3:0] nextState;	
+				
+							
+//defining states 
+localparam		  S_SCAN = 4'd0,
+			  S_WAIT = 4'd1,
+			  S_BLACK = 4'd2,
+			  S_WAIT_1 = 4'd3,
+			  S_GREEN = 4'd4,
+			  S_WAIT_2 = 4'd5,
+			  S_RED = 4'd6,
+			  S_WAIT_3 = 4'd7;
+		
+//state table definition
+
+always@(*)
+	begin: state_table
+		
+		case(currentState)
+		
+			S_SCAN: nextState = valid ? S_WAIT : S_SCAN;
+			
+			S_WAIT: nextState = valid ? S_WAIT : S_BLACK;
+			
+			S_BLACK: nextState = done ? S_WAIT_1 : S_BLACK;
+			
+			S_WAIT_1: nextState = done ? S_WAIT_1 : S_GREEN;
+			
+			S_GREEN: nextState = done ? S_WAIT_2 : S_GREEN;
+			
+			S_WAIT_2: nextState = done ? S_WAIT_2 : S_RED;
+			
+			S_RED: nextState = done ? S_WAIT_3 : S_RED;
+
+			S_WAIT_3: nextState = done ? S_WAIT_3 : S_SCAN;
+			
+			default: nextState = S_SCAN;
+		endcase
+	end//always
+			
+			
+			
+			
+//state registers 
+
+always@(posedge clock)
+begin: state_FFs
+	
+	if(reset)begin
+		currentState <= S_SCAN;
+	end
+	
+	else begin
+	currentState <= nextState;
+	end
+
+end//always
+
+
+
+
+
+//output logic 
+
+always@(posedge clock)
+begin: enables
+
+	//default enables
+	black_en = 1'b0;
+	green_en = 1'b0;
+	red_en = 1'b0;
+	go = 1'b0;
+	//nextState = currentState;
+
+	case(currentState)
+	
+	S_BLACK: 
+	begin
+			black_en = 1'b1;
+			go = 1'b1;
+	end
+	
+	S_GREEN: 
+	begin
+			green_en = 1'b1;
+			go = 1'b1;
+	end
+	
+	S_RED: 
+	begin
+			red_en = 1'b1;
+			go =1'b1;
+	end
+	
+ endcase		
+
+end//always output logic
+
+
+
+endmodule
+
+
+module drawCtrl_dataPath(					 input [7:0] y_g,
+								 input [7:0] y_r, 
+								 input valid,
+								 input black,
+								 input red, 
+								 input green, 
+								 input reset, 
+								 input clock, 
+								 input goIn,
+								 
+								 output reg [2:0] RGB, 
+								 output reg [8:0] x0, 
+								 output reg [7:0] y0, 
+								 output reg [8:0] w,
+								 output reg [7:0] h,
+								 output reg goOut
+								 );//datapath
+								 
+								 
+always@(posedge clock)begin
+		goOut <= goIn;
+	
+	if(reset)begin
+			RGB = 3'b000;
+			x0 = 9'b0;
+			y0 = 8'b0;
+			w = 9'd0;
+			h = 8'd0;
+			
+	end
+else begin
+		if(black)
+		begin
+			RGB = 3'b000;
+			x0 = 9'b0;
+			y0 = 8'b0;
+			w = 9'd160;
+			h = 8'd120; 
+			
+		end
+		
+		if(red)
+		begin
+			RGB = 3'b111;
+			x0 = 9'd100;
+			y0 = y_r;
+			w = 9'd10;
+			h = 8'd30;
+			;	
+		end
+		
+		if(green)
+		begin
+			RGB = 3'b111;
+			x0 = 9'd20;
+			y0 = y_g;
+			w = 9'd10;
+			h = 8'd30; 
+			
+		end		
+	end // else
+end//always								 							 							 
+
+endmodule 

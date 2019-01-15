@@ -1,0 +1,198 @@
+module rectangletTest (
+		CLOCK_50,						//	On Board 50 MHz
+		// Your inputs and outputs here
+		KEY,							// On Board Keys
+		SW,
+		LEDR,
+		// The ports below are for the VGA output.  Do not change.
+		VGA_CLK,   						//	VGA Clock
+		VGA_HS,							//	VGA H_SYNC
+		VGA_VS,							//	VGA V_SYNC
+		VGA_BLANK_N,						//	VGA BLANK
+		VGA_SYNC_N,						//	VGA SYNC
+		VGA_R,   						//	VGA Red[9:0]
+		VGA_G,	 						//	VGA Green[9:0]
+		VGA_B   						//	VGA Blue[9:0]
+	);
+
+	input			CLOCK_50;				//	50 MHz
+	input	[3:0]	KEY;			
+	input [9:0] SW;
+	output[9:0] LEDR;
+	// Declare your inputs and outputs here
+	// Do not change the following outputs
+	output			VGA_CLK;   				//	VGA Clock
+	output			VGA_HS;					//	VGA H_SYNC
+	output			VGA_VS;					//	VGA V_SYNC
+	output			VGA_BLANK_N;				//	VGA BLANK
+	output			VGA_SYNC_N;				//	VGA SYNC
+	output	[7:0]	VGA_R;   				//	VGA Red[7:0] Changed from 10 to 8-bit DAC
+	output	[7:0]	VGA_G;	 				//	VGA Green[7:0]
+	output	[7:0]	VGA_B;   				//	VGA Blue[7:0]
+	
+	//wire resetn;
+	//wire go, plotEnable, done;
+	//assign resetn = KEY[0];
+	//assign LEDR[0] = go;
+	//assign LEDR[9] = plotEnable;
+	
+	// Create the colour, x, y and writeEn wires that are inputs to the controller.
+
+	wire [2:0] colour;
+	wire [7:0] x;
+	wire [6:0] y;
+	wire writeEn;
+
+	// Create an Instance of a VGA controller - there can be only one!
+	// Define the number of colours as well as the initial background
+	// image file (.MIF) for the controller.
+	vga_adapter VGA(
+			.resetn(~KEY[0]),
+			.clock(CLOCK_50),
+			.colour(colour),
+			.x(x),
+			.y(y),
+			.plot(writeEn),
+			/* Signals for the DAC to drive the monitor. */
+			.VGA_R(VGA_R),
+			.VGA_G(VGA_G),
+			.VGA_B(VGA_B),
+			.VGA_HS(VGA_HS),
+			.VGA_VS(VGA_VS),
+			.VGA_BLANK(VGA_BLANK_N),
+			.VGA_SYNC(VGA_SYNC_N),
+			.VGA_CLK(VGA_CLK));
+		defparam VGA.RESOLUTION = "160x120";
+		defparam VGA.MONOCHROME = "FALSE";
+		defparam VGA.BITS_PER_COLOUR_CHANNEL = 1;
+		defparam VGA.BACKGROUND_IMAGE = "black.mif";
+			
+	// Put your code here. Your code should produce signals x,y,colour and writeEn
+	// for the VGA controller, in addition to any other functionality your design may require.
+	//initialize datapath 
+	wire x_en, y_en, y_sel, init;
+	wire [2:0] x_sel;
+	wire x_done, y_done;
+/*rectangleData dp(		.x0(SW[1:0]), 
+							.y0(SW[2]), 
+							.height(SW[4:3]), 
+							.width(SW[6:5]),
+							.RGB(SW[9:7]),
+							.x_en(x_en), 
+							.x_sel(x_sel), 
+							.y_en(y_en), 
+							.y_sel(y_sel), 
+							.init(init), 
+							.clk(CLOCK_50), 
+							.reset(~KEY[0]),
+
+							
+							.x_done(x_done), 
+							.y_done(y_done),  
+							.x(x), 
+							.y(y), 
+							 .colorOut(colorOut));
+							
+//initialize ctrlpath
+rectangleCtrl cp
+(
+	.clk(CLOCK_50),
+	.reset(~KEY[0]),
+	
+	.go(~KEY[1]),
+	
+	.done(LEDR[0]),
+   .init(init),
+	.x_en(x_en),
+	.x_sel(x_sel),
+	.y_en(y_en),
+	.y_sel(y_sel),
+	.x_done(x_done),
+	.y_done(y_done),
+	
+	.plot(writeEnable)
+);	*/
+	
+
+rectangleTop top (.x0(SW[1:0]), 
+						.y0(SW[2]), 
+						.width(SW[4:3]),
+						.height(SW[6:5]),
+						.RGB(SW[9:7]),
+						.clck(CLOCK_50), 
+						.reset(~KEY[0]), 
+						.go(~KEY[1]),
+						.xOut(x),
+						.yOut(y),
+						.plotEnable(writeEn),
+						.colorOut(colour)
+						);
+
+						assign LEDR[0] = writeEn;
+						
+endmodule //top level
+
+module rectangleTop (input [7:0]x0, 
+							input [6:0]y0,
+							input [7:0]width, 
+							input [6:0]height, 
+							input [2:0]RGB,
+							input clck, 
+							input reset,
+							
+							input go,
+							
+							output [7:0]xOut, 
+							output [6:0]yOut, 
+							output plotEnable,
+							output [2:0]colorOut
+							);
+
+wire x_en, y_en, init, y_sel;
+wire[2:0]x_sel;
+wire x_done, y_done, done;
+ 
+//initialize datapath 
+/rectangleData dp(		.x0(x0), 
+							.y0(y0), 
+							.height(height), 
+							.width(width),
+							.RGB(RGB),
+							.x_en(x_en), 
+							.x_sel(x_sel), 
+							.y_en(y_en), 
+							.y_sel(y_sel), 
+							.init(init), 
+							.clk(clck), 
+							.reset(reset),
+
+							
+							.x_done(x_done), 
+							.y_done(y_done),  
+							.x(xOut), 
+							.y(yOut), 
+							 .colorOut(colorOut));
+							
+//initialize ctrlpath
+rectangleCtrl cp
+(
+	.clk(clck),
+	.reset(reset),
+	
+	.go(go),
+	
+	.done(done),
+   .init(init),
+	.x_en(x_en),
+	.x_sel(x_sel),
+	.y_en(y_en),
+	.y_sel(y_sel),
+	.x_done(x_done),
+	.y_done(y_done),
+	
+	.plot(plotEnable)
+);
+
+
+
+endmodule

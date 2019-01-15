@@ -1,0 +1,8 @@
+
+State Machine - |ballMoveTest|ballMoveTop:ball|ballMoveControlPath:ballCp|currentState
+Name currentState.S_HIT_PADDLE currentState.S_IDLE currentState.S_START_MOVE currentState.S_INIT currentState.S_HIT_WALL 
+currentState.S_INIT 0 0 0 0 0 
+currentState.S_START_MOVE 0 0 1 1 0 
+currentState.S_IDLE 0 1 0 1 0 
+currentState.S_HIT_PADDLE 1 0 0 1 0 
+currentState.S_HIT_WALL 0 0 0 1 1 

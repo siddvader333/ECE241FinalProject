@@ -1,0 +1,164 @@
+/*module renderTest(
+CLOCK_50,						//	On Board 50 MHz
+		// Your inputs and outputs here
+		KEY,							// On Board Keys
+		SW,
+		LEDR,
+		// The ports below are for the VGA output.  Do not change.
+		VGA_CLK,   						//	VGA Clock
+		VGA_HS,							//	VGA H_SYNC
+		VGA_VS,							//	VGA V_SYNC
+		VGA_BLANK_N,						//	VGA BLANK
+		VGA_SYNC_N,						//	VGA SYNC
+		VGA_R,   						//	VGA Red[9:0]
+		VGA_G,	 						//	VGA Green[9:0]
+		VGA_B   						//	VGA Blue[9:0]
+);
+
+	input			CLOCK_50;				//	50 MHz
+	input	[3:0]	KEY;			
+	input [9:0] SW;
+	output[9:0] LEDR;
+	// Declare your inputs and outputs here
+	// Do not change the following outputs
+	output			VGA_CLK;   				//	VGA Clock
+	output			VGA_HS;					//	VGA H_SYNC
+	output			VGA_VS;					//	VGA V_SYNC
+	output			VGA_BLANK_N;				//	VGA BLANK
+	output			VGA_SYNC_N;				//	VGA SYNC
+	output	[7:0]	VGA_R;   				//	VGA Red[7:0] Changed from 10 to 8-bit DAC
+	output	[7:0]	VGA_G;	 				//	VGA Green[7:0]
+	output	[7:0]	VGA_B;   				//	VGA Blue[7:0]
+	
+	wire resetn;
+	//wire go, plotEnable, done;
+	assign resetn = KEY[0];
+	//assign LEDR[0] = go;
+	//assign LEDR[9] = plotEnable;
+	
+	// Create the colour, x, y and writeEn wires that are inputs to the controller.
+
+	wire [2:0] colour;
+	wire [7:0] x;
+	wire [6:0] y;
+	wire writeEn;
+
+	// Create an Instance of a VGA controller - there can be only one!
+	// Define the number of colours as well as the initial background
+	// image file (.MIF) for the controller.
+	vga_adapter VGA(
+			.resetn(resetn),
+			.clock(CLOCK_50),
+			.colour(colour),
+			.x(x),
+			.y(y),
+			.plot(writeEn),
+			/* Signals for the DAC to drive the monitor. */
+			/*.VGA_R(VGA_R),
+			.VGA_G(VGA_G),
+			.VGA_B(VGA_B),
+			.VGA_HS(VGA_HS),
+			.VGA_VS(VGA_VS),
+			.VGA_BLANK(VGA_BLANK_N),
+			.VGA_SYNC(VGA_SYNC_N),
+			.VGA_CLK(VGA_CLK));
+		defparam VGA.RESOLUTION = "160x120";
+		defparam VGA.MONOCHROME = "FALSE";
+		defparam VGA.BITS_PER_COLOUR_CHANNEL = 1;
+		defparam VGA.BACKGROUND_IMAGE = "black.mif";
+
+
+//render --> talks to VGA
+render renderTop(
+				   .y_g(SW[9:5]),
+				   .y_r(SW[4:0]),
+					.valid(~KEY[3]), 
+				   .clock(CLOCK_50),
+				   .reset(~KEY[0]),
+				  
+				  .xOut(x),
+				  .yOut(y),
+				  .plotEnable(writeEn), 
+				  .colorOut(RGB)
+				  
+				  );
+
+endmodule */
+
+
+module renderTest(
+				  input [6:0] y_g,
+				  input [6:0] y_r,
+				  input [7:0] x_ball,
+				  input [6:0] y_ball,
+				  input valid, 
+				  input clock,
+				  input reset,
+				  
+				  output [7:0]xOut,
+				  output [6:0]yOut,
+				  output plotEnable, 
+				  output [2:0] colorOut,
+				  output validOut,
+				  output doneOut
+				  
+				  );
+				  
+
+				  assign validOut = valid;
+				  assign doneOut = done;
+				  
+wire state;		
+wire [7:0]x0;
+wire [7:0]w;
+wire [6:0]y0;
+wire [6:0]h;
+wire [2:0]RGB;	
+wire go;  
+wire done;
+				  
+//drawCtrTlTop
+drawCtrlTop dctrlTop
+(
+	.y_g(y_g),
+	.y_r(y_r),
+	.x_ball(x_ball),
+	.y_ball(y_ball),
+
+	.valid(valid), 
+	.done(done),
+
+	.clock(clock),
+
+	.reset(reset),
+	.state(state),
+	.go(go),
+	.RGB(RGB),
+	.x0Out(x0),
+	.y0Out(y0),
+	.width(w),
+	.height(h)
+);
+
+//rectangleTop
+ rectangleTop rctTop(		
+							.x0(x0), 
+							.y0(y0),
+							.width(w), 
+							.height(h), 
+						   .RGB(RGB),
+							.clck(clock), 
+						   .reset(reset),
+							
+							.go(go),
+							.doneOut(done),
+							.xOut(xOut), 
+							.yOut(yOut), 
+							.plotEnable(plotEnable),
+						   .colorOut(colorOut)
+							);
+
+
+
+
+endmodule
